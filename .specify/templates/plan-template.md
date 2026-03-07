@@ -31,9 +31,10 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-- [ ] **Database Operations**: Do all database operations go through MCP Toolbox `tools.yaml` (no raw SQL, no ORM)?
-- [ ] **Session State**: Is session state exclusively using ADK `ToolContext` (no custom state, no external stores)?
-- [ ] **Simplicity**: Does the design keep it simple and follow existing file and naming conventions exactly?
+- [ ] **ADK Orchestration**: Is all AI processing done through ADK agents using `gemini-2.0-flash`? No direct LLM API calls outside ADK.
+- [ ] **Session State**: Is inter-agent state passed exclusively via ADK `ToolContext` (no custom state, no external stores)?
+- [ ] **API Contract**: Does the endpoint accept `multipart/form-data` PDF and return the canonical JSON schema? PDF extraction via `PyMuPDF` only.
+- [ ] **UI Standard**: Does all frontend code follow the Cinematic SaaS design system (colors, motion 0.5–0.8s, Inter/Geist fonts)?
 - [ ] **Spec-Driven**: Does this feature begin with a clear, approved specification?
 
 ## Project Structure

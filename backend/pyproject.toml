@@ -1,0 +1,29 @@
+[project]
+name = "my-careerpath-backend"
+version = "0.1.0"
+description = "AI-driven career growth platform — FastAPI + Google ADK backend"
+requires-python = ">=3.11"
+
+dependencies = [
+    "google-adk>=1.0.0",
+    "google-genai>=1.0.0",
+    "pymupdf>=1.24.0",        # PDF text extraction (PyMuPDF / fitz)
+    "fastapi>=0.111.0",
+    "uvicorn[standard]>=0.29.0",
+    "python-multipart>=0.0.9",  # Required for FastAPI file uploads
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "httpx>=0.27.0",           # For TestClient in tests
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["my_careerpath"]

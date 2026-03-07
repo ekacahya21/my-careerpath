@@ -19,9 +19,9 @@ The project uses a decoupled architecture to separate the heavy AI processing fr
 ### Backend (AI Logic & API)
 * **Framework:** Python with FastAPI
 * **AI Orchestration:** Google Agent Development Kit (ADK)
-* **Primary LLM:** Gemini 3.1 Pro
+* **Primary LLM:** `gemini-2.0-flash` (via `google-genai` SDK)
 * **Tools:** `GoogleSearchTool` (for the scout agent)
-* **PDF Processing:** `PyMuPDF` or `pdfplumber`
+* **PDF Processing:** `PyMuPDF` (fitz) — committed library for all PDF text extraction
 
 ## 3. Strict UI/UX Guidelines (The "Cinematic SaaS" Standard)
 All frontend components MUST adhere strictly to the following design system to ensure a premium, modern feel:
@@ -47,7 +47,33 @@ All frontend components MUST adhere strictly to the following design system to e
 * **Input:** Career trajectory data.
 * **Output:** Array of 3 recommended companies with name, brief rationale, and potential roles.
 
-## 5. Core Data Structures (API Contracts)
+## 5. ADK Orchestration Pattern
+
+The backend uses ADK's **sequential multi-agent** pattern:
+
+1. The FastAPI endpoint receives the PDF, extracts raw text using `PyMuPDF`, and invokes the **Analyzer Agent** via `adk.Runner`.
+2. The Analyzer Agent processes the CV text and returns structured JSON (`current_skills`, `skill_gaps`, `milestones`).
+3. The Analyzer Agent internally calls the **Scout Agent** as a **sub-agent tool call**, passing the career trajectory data.
+4. The Scout Agent executes `GoogleSearchTool` queries and returns `company_matches`.
+5. The FastAPI endpoint merges both outputs into the final API response.
+
+**Session & State:** All inter-agent state is passed explicitly via ADK `ToolContext` — no external stores or custom state management.
+
+---
+
+## 6. Environment Variables
+
+All secrets and config must be set in a `.env` file at the backend root:
+
+| Variable | Description |
+|---|---|
+| `GOOGLE_API_KEY` | API key for Gemini and Google Search |
+| `NEXT_PUBLIC_API_BASE_URL` | Base URL of the FastAPI backend (e.g., `http://localhost:8000`) |
+| `CORS_ALLOWED_ORIGINS` | Comma-separated list of allowed frontend origins |
+
+---
+
+## 7. Core Data Structures (API Contracts)
 
 ### /api/analyze-cv (POST)
 **Request:** `multipart/form-data` (PDF File)
