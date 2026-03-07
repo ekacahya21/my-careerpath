@@ -134,30 +134,48 @@ export default function ResultsPanel({ data, onReset }: ResultsPanelProps) {
                     <h2 style={labelStyle}>Company Matches</h2>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
-                    {data.company_matches.map((company, i) => (
-                        <motion.div
-                            key={company.company_name}
-                            initial={{ opacity: 0, y: 8 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.22 + i * 0.1, ease: "easeOut" }}
-                            style={{
-                                padding: "1rem 1.25rem",
-                                background: "var(--surface-elevated)",
-                                borderRadius: "var(--radius)",
-                                border: "1px solid var(--border-subtle)",
-                            }}
-                        >
-                            <div style={{ display: "flex", alignItems: "flex-start", gap: "0.6rem", marginBottom: "0.4rem" }}>
-                                <CheckCircle2 size={15} color="#22c55e" strokeWidth={2} style={{ marginTop: 2, flexShrink: 0 }} />
-                                <p style={{ fontWeight: 600, color: "var(--text-primary)", fontSize: "0.9rem" }}>
-                                    {company.company_name}
+                    {data.company_matches.map((company, i) => {
+                        const searchQuery = encodeURIComponent(`${company.company_name} ${company.search_query_used || "careers jobs"}`);
+                        const searchUrl = `https://www.google.com/search?q=${searchQuery}&ibp=htl;jobs`;
+
+                        return (
+                            <motion.a
+                                key={company.company_name}
+                                href={searchUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                initial={{ opacity: 0, y: 8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: 0.22 + i * 0.1, ease: "easeOut" }}
+                                style={{
+                                    display: "block",
+                                    textDecoration: "none",
+                                    padding: "1rem 1.25rem",
+                                    background: "var(--surface-elevated)",
+                                    borderRadius: "var(--radius)",
+                                    border: "1px solid var(--border-subtle)",
+                                    transition: "border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease",
+                                    cursor: "pointer",
+                                }}
+                                whileHover={{
+                                    borderColor: "var(--border)",
+                                    y: -2,
+                                    boxShadow: "var(--shadow-sm)",
+                                }}
+                                whileTap={{ scale: 0.99 }}
+                            >
+                                <div style={{ display: "flex", alignItems: "flex-start", gap: "0.6rem", marginBottom: "0.4rem" }}>
+                                    <CheckCircle2 size={15} color="#22c55e" strokeWidth={2} style={{ marginTop: 2, flexShrink: 0 }} />
+                                    <p style={{ fontWeight: 600, color: "var(--text-primary)", fontSize: "0.9rem" }}>
+                                        {company.company_name}
+                                    </p>
+                                </div>
+                                <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", lineHeight: 1.65, marginLeft: "1.45rem" }}>
+                                    {company.match_reason}
                                 </p>
-                            </div>
-                            <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", lineHeight: 1.65, marginLeft: "1.45rem" }}>
-                                {company.match_reason}
-                            </p>
-                        </motion.div>
-                    ))}
+                            </motion.a>
+                        );
+                    })}
                 </div>
             </motion.section>
 
